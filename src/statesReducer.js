@@ -1,10 +1,16 @@
-import { INIT_STATE, REMOVE_STATE } from './actionTypes';
+import {INIT_LOCAL_STATE, INIT_STATE, REMOVE_STATE} from './actionTypes';
 
-const stateCreator = (stateId, stateReducer) => ({
-    stateId,
-    state: stateReducer(),
-    stateReducer
-});
+const stateCreator = (stateId, stateReducer, mapInitialState, getState) => {
+    let initState = undefined;
+    if(mapInitialState !== undefined && mapInitialState !== null && typeof(mapInitialState) === 'function') {
+        initState = mapInitialState(getState());
+    }
+    return {
+        stateId,
+        state: stateReducer(initState, {type: INIT_LOCAL_STATE}),
+        stateReducer
+    }
+};
 const initialState = {};
 
 const statesReducer = (state = initialState, action) => {
@@ -12,12 +18,12 @@ const statesReducer = (state = initialState, action) => {
     switch (action.type) {
         case INIT_STATE:
             {
-                const {stateId, stateReducer} = action.payload;
+                const {stateId, stateReducer, mapInitialStateFromReduxState, getState} = action.payload;
 
                 // TODO check if stateId's already registered
                 return {
                     ...state,
-                    [stateId]: stateCreator(stateId, stateReducer)
+                    [stateId]: stateCreator(stateId, stateReducer, mapInitialStateFromReduxState, getState)
                 }
             }
         case REMOVE_STATE:

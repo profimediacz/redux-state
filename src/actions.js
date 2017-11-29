@@ -1,10 +1,12 @@
 import {INIT_STATE, REMOVE_STATE, UPDATE_STATY} from './actionTypes'
 
-export const initState = (stateId, stateReducer) => ({
+export const initState = (stateId, stateReducer, mapInitialStateFromReduxState, getState) => ({
     type: INIT_STATE,
     payload: {
         stateId,
-        stateReducer
+        stateReducer,
+        mapInitialStateFromReduxState,
+        getState
     }
 });
 

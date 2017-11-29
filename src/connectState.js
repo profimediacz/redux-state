@@ -9,6 +9,7 @@ import invariant from 'invariant';
 import nextStateId from './nextStateId';
 
 const defaultMapStateToProps = () => ({});
+const defaultMapInitialStateFromReduxState = undefined;
 const defaultMapDispatchToProps = (stateDispatch) => ({stateDispatch});
 const defaultMergeProps = (stateProps, dispatchProps, parentProps) => ({
     ...parentProps,
@@ -44,7 +45,7 @@ const createStateDispatch = (store, stateId) => {
     return stateDispatch
 };
 
-const connectState = (mapStateOfStateToProps = defaultMapStateToProps, mapStateDispatchToProps = defaultMapDispatchToProps, mergeProps = defaultMergeProps, stateReducer, passIdIntoContext = true) => {
+const connectState = (mapStateOfStateToProps = defaultMapStateToProps, mapStateDispatchToProps = defaultMapDispatchToProps, mergeProps = defaultMergeProps, stateReducer, passIdIntoContext = true, mapInitialStateFromReduxState = defaultMapInitialStateFromReduxState) => {
 
     const mapStateToProps = (store, stateId, props) => {
         const {[stateId]: {state: stateOfState}} = getStateOfStates(store);
@@ -100,7 +101,7 @@ const connectState = (mapStateOfStateToProps = defaultMapStateToProps, mapStateD
                     const {stateId = nextStateId()} = this.props;
                     this.setState({stateId});
 
-                    store.dispatch(actions.initState(stateId, stateReducer))
+                    store.dispatch(actions.initState(stateId, stateReducer, mapInitialStateFromReduxState, store.getState))
                 } else {
                     const {stateId} = this.context;
 
