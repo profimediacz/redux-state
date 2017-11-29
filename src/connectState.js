@@ -101,7 +101,7 @@ const connectState = (mapStateOfStateToProps = defaultMapStateToProps, mapStateD
                     const {stateId = nextStateId()} = this.props;
                     this.setState({stateId});
 
-                    store.dispatch(actions.initState(stateId, stateReducer, mapInitialStateFromReduxState, store.getState))
+                    store.dispatch(actions.initState(stateId, stateReducer, mapInitialStateFromReduxState, this.props, store.getState))
                 } else {
                     const {stateId} = this.context;
 
