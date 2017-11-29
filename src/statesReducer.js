@@ -35,6 +35,8 @@ const statesReducer = (state = initialState, action) => {
 
                 return restStates
             }
+        default:
+            break;
     }
 
     const stateId = action.meta && action.meta.stateId;
