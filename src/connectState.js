@@ -1,34 +1,34 @@
-import * as actions from './actions'
+import * as actions from './actions';
 
-import React, { Component } from 'react'
-import { stateIdPropType, storePropType } from './propTypes'
+import React, { Component } from 'react';
+import { stateIdPropType, storePropType } from './propTypes';
 
-import hoist from 'hoist-non-react-statics'
-import invariant from 'invariant'
+import hoist from 'hoist-non-react-statics';
+import invariant from 'invariant';
 
-import nextStateId from './nextStateId'
+import nextStateId from './nextStateId';
 
-const defaultMapStateToProps = () => ({})
-const defaultMapDispatchToProps = (stateDispatch) => ({stateDispatch})
+const defaultMapStateToProps = () => ({});
+const defaultMapDispatchToProps = (stateDispatch) => ({stateDispatch});
 const defaultMergeProps = (stateProps, dispatchProps, parentProps) => ({
     ...parentProps,
     ...stateProps,
     ...dispatchProps
-})
+});
 
-const getStateOfStates = store => store.getState().states
-const checkStateConnected = store => invariant(getStateOfStates(store), `Should add statesReducer into the store`)
+const getStateOfStates = store => store.getState().states;
+const checkStateConnected = store => invariant(getStateOfStates(store), `Should add statesReducer into the store`);
 
 const createStateDispatch = (store, stateId) => {
     const stateDispatch = (action) => {
-        const states = getStateOfStates(store)
-        invariant(states[ stateId ], `Somebody trying get state when component\`s already unmount`)
+        const states = getStateOfStates(store);
+        invariant(states[ stateId ], `Somebody trying get state when component\`s already unmount`);
 
         if (typeof action === `function`) {
             const getState = () => {
-                const {[stateId]: {state}} = states
+                const {[stateId]: {state}} = states;
                 return state
-            }
+            };
             return action(stateDispatch, getState, store)
         }
 
@@ -39,28 +39,28 @@ const createStateDispatch = (store, stateId) => {
                 stateId
             }
         })
-    }
+    };
 
     return stateDispatch
-}
+};
 
 const connectState = (mapStateOfStateToProps = defaultMapStateToProps, mapStateDispatchToProps = defaultMapDispatchToProps, mergeProps = defaultMergeProps, stateReducer, passIdIntoContext = true) => {
 
     const mapStateToProps = (store, stateId, props) => {
-        const {[stateId]: {state: stateOfState}} = getStateOfStates(store)
+        const {[stateId]: {state: stateOfState}} = getStateOfStates(store);
 
         return mapStateOfStateToProps(stateOfState, props, store.getState())
-    }
+    };
     const mapDispatchToProps = (store, stateId, props) => {
-        const stateDispatch = createStateDispatch(store, stateId)
+        const stateDispatch = createStateDispatch(store, stateId);
         return mapStateDispatchToProps(stateDispatch, props, store.dispatch)
-    }
+    };
 
     return WrappedComponent => {
         class ReduxState extends Component {
 
             constructor(_, context) {
-                super()
+                super();
 
                 this.state = {
                     reduxState: context.store.getState()
@@ -78,7 +78,7 @@ const connectState = (mapStateOfStateToProps = defaultMapStateToProps, mapStateD
             }
 
             componentDidMount() {
-                const {store} = this.context
+                const {store} = this.context;
 
                 this.unsubscribe = store.subscribe(() => {
                     if (!this.unsubscribe) {
@@ -93,43 +93,43 @@ const connectState = (mapStateOfStateToProps = defaultMapStateToProps, mapStateD
             }
 
             componentWillMount() {
-                const {store} = this.context
-                checkStateConnected(store)
+                const {store} = this.context;
+                checkStateConnected(store);
 
                 if (stateReducer) {
-                    const {stateId = nextStateId()} = this.props
-                    this.setState({stateId})
+                    const {stateId = nextStateId()} = this.props;
+                    this.setState({stateId});
 
                     store.dispatch(actions.initState(stateId, stateReducer))
                 } else {
-                    const {stateId} = this.context
+                    const {stateId} = this.context;
 
-                    invariant(typeof stateId !== `undefined`, `Should declare component with reducer`)
+                    invariant(typeof stateId !== `undefined`, `Should declare component with reducer`);
 
                     this.setState({stateId})
                 }
             }
 
             componentWillUnmount() {
-                this.unsubscribe()
+                this.unsubscribe();
 
-                this.unsubscribe = null
+                this.unsubscribe = null;
 
                 if (stateReducer) {
-                    const {stateId} = this.state
-                    const {store} = this.context
+                    const {stateId} = this.state;
+                    const {store} = this.context;
 
                     setTimeout(() => store.dispatch(actions.removeState(stateId)), 0)
                 }
             }
 
             render() {
-                const {store} = this.context
-                const {stateId} = this.state
+                const {store} = this.context;
+                const {stateId} = this.state;
 
-                const stateProps = mapStateToProps(store, stateId, this.props)
-                const dispatchProps = mapDispatchToProps(store, stateId, this.props)
-                const mergedProps = mergeProps(stateProps, dispatchProps, this.props)
+                const stateProps = mapStateToProps(store, stateId, this.props);
+                const dispatchProps = mapDispatchToProps(store, stateId, this.props);
+                const mergedProps = mergeProps(stateProps, dispatchProps, this.props);
 
                 return (
                     <WrappedComponent {...mergedProps}/>
@@ -139,14 +139,14 @@ const connectState = (mapStateOfStateToProps = defaultMapStateToProps, mapStateD
 
         ReduxState.childContextTypes = {
             stateId: stateIdPropType
-        }
+        };
 
         ReduxState.contextTypes = {
             stateId: stateIdPropType,
             store: storePropType
-        }
+        };
         return hoist(ReduxState, WrappedComponent)
     }
-}
+};
 
-export default connectState
+export default connectState;

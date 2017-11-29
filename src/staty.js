@@ -1,10 +1,10 @@
-import {UPDATE_STATY} from './actionTypes'
-import connectState from './connectState'
-import statyReducerCreator from './statyReducer'
+import {UPDATE_STATY} from './actionTypes';
+import connectState from './connectState';
+import statyReducerCreator from './statyReducer';
 
 const mapStateToProps = (state) => ({
     state
-})
+});
 
 const mapDispatchToProps = (dispatch) => ({
     setState: state => dispatch({
@@ -13,8 +13,8 @@ const mapDispatchToProps = (dispatch) => ({
             state
         }
     })
-})
+});
 
-const staty = initialState => WrappedComponent => connectState(mapStateToProps, mapDispatchToProps, undefined, statyReducerCreator(initialState))(WrappedComponent)
+const staty = initialState => WrappedComponent => connectState(mapStateToProps, mapDispatchToProps, undefined, statyReducerCreator(initialState))(WrappedComponent);
 
-export default staty
+export default staty;

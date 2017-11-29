@@ -1,4 +1,4 @@
-import { UPDATE_STATY } from './actionTypes'
+import { UPDATE_STATY } from './actionTypes';
 
 const statyReducerCreator = (initialState = {}) => (state = initialState, action = {}) => {
     if (action.type === UPDATE_STATY) {
@@ -6,6 +6,6 @@ const statyReducerCreator = (initialState = {}) => (state = initialState, action
     }
 
     return state
-}
+};
 
-export default statyReducerCreator
+export default statyReducerCreator;

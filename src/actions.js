@@ -6,18 +6,18 @@ export const initState = (stateId, stateReducer) => ({
         stateId,
         stateReducer
     }
-})
+});
 
 export const removeState = (stateId) => ({
     type: REMOVE_STATE,
     payload: {
         stateId
     }
-})
+});
 
 export const updateStaty = (state) => ({
     type: UPDATE_STATY,
     payload: {
         state
     }
-})
+});
