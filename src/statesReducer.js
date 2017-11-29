@@ -29,7 +29,9 @@ const statesReducer = (state = initialState, action) => {
         case REMOVE_STATE:
             {
                 const {stateId} = action.payload;
-                const {[stateId]: stateToRemove, ...restStates} = state;
+                //const {[stateId]: stateToRemove, ...restStates} = state;
+                const restStates = {...state};
+                delete restStates[stateId];
 
                 return restStates
             }
@@ -38,8 +40,15 @@ const statesReducer = (state = initialState, action) => {
     const stateId = action.meta && action.meta.stateId;
 
     if (typeof stateId !== `undefined`) {
-        const {[stateId]: stateToUpdate, ...restStates} = state;
-        const {state: stateOfStateToUpdate, ...restOfStateToUpdate} = stateToUpdate;
+        //const {[stateId]: stateToUpdate, ...restStates} = state;
+        const stateToUpdate = state[stateId];
+        const restStates = {...state};
+        delete restStates[stateId];
+
+        //const {state: stateOfStateToUpdate, ...restOfStateToUpdate} = stateToUpdate;
+        const stateOfStateToUpdate = stateToUpdate["state"];
+        const restOfStateToUpdate = {...stateToUpdate};
+        delete restOfStateToUpdate["state"];
 
         return {
             ...restStates,
@@ -53,8 +62,16 @@ const statesReducer = (state = initialState, action) => {
     return Object
         .keys(state)
         .reduce((updatedStates, _stateId) => {
-            const {[_stateId]: stateToUpdate, ...restStates} = updatedStates;
-            const {state: stateOfStateToUpdate, ...restOfStateToUpdate} = stateToUpdate;
+            //const {[_stateId]: stateToUpdate, ...restStates} = updatedStates;
+            const stateToUpdate = updatedStates[_stateId];
+            const restStates = {...updatedStates};
+            delete restStates[_stateId];
+
+
+            //const {state: stateOfStateToUpdate, ...restOfStateToUpdate} = stateToUpdate;
+            const stateOfStateToUpdate = stateToUpdate["state"];
+            const restOfStateToUpdate = {...stateToUpdate};
+            delete restOfStateToUpdate["state"];
 
             return {
                 ...restStates,
