@@ -3,7 +3,7 @@ import {INIT_LOCAL_STATE, INIT_STATE, REMOVE_STATE} from './actionTypes';
 const stateCreator = (stateId, stateReducer, mapInitialState, getState) => {
     let initState = undefined;
     if(mapInitialState !== undefined && mapInitialState !== null && typeof(mapInitialState) === 'function') {
-        initState = mapInitialState(getState());
+        initState = mapInitialState(getState);
     }
     return {
         stateId,
